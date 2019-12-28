@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Thank you!</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    </head>
+    <body>
+
+        <h2>Thank you! You have been signed up to the event!</h2>
+        
+        <h4>Attendees so far: </h4>
+        <ul>
+            <li th:each="element : ${list}">
+                <span th:text="${element}">Attendee</span>
+            </li>
+        </ul>
+        
+        <h4> Crucial information! </h4>
+        
+        <p> Everyone signed up for the event can make an account to access a secret page! </p>
+        <a href="/secret">Secret page!</a>
+        
+        <h4> Create a new account </h4>
+        <form method="POST" th:object ="${account}" th:action="@{/accounts}">
+            <table>
+                <tr>
+                    <td> Username </td>
+                    <td><input type="text" th:field="*{username}" /></td>
+                    <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error Message</td>
+                </tr>
+                
+                <tr>
+                    <td> Password </td>
+                    <td><input type="password" th:field="*{password}" /></td>
+                    <td th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error Message</td>
+                </tr>
+                
+                <tr>
+                    <td><button type="submit">Submit</button></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </form>
+
+        <div th:replace="fragments/layout :: links"></div>
+
+    </body>
+</html>

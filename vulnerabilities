@@ -1,0 +1,15 @@
+1: SQL -injektio
+- jonkun syötteen käsittely (joka näytetään) w jdbc
+
+2: Broken authentication
+- heikot hyväksytyt salasant (solution, validaatio)
+
+3: XSS
+- joku syöte unescaped (esim. kommentti)
+
+4: Sensitive data exposure
+- salasanat ilman bcryp (solution, bcrypt)
+
+5: Broken Access Control
+- luvattomat päästyt tiettyihin url (fixejä monia)
+ 
