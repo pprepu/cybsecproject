@@ -1,11 +1,13 @@
 1: SQL -injektio
 - jonkun syötteen käsittely (joka näytetään) w jdbc
+- evilAddress'); DELETE FROM Signup WHERE id = 1 OR ('1'='1
 
 2: Broken authentication
-- heikot hyväksytyt salasant (solution, validaatio)
+- heikot hyväksytyt salasanat (solution, validaatio)
 
 3: XSS
 - joku syöte unescaped (esim. kommentti)
+- th:utext myös doneen?
 
 4: Sensitive data exposure
 - salasanat ilman bcryp (solution, bcrypt)

@@ -34,7 +34,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/done").permitAll()
                 .antMatchers("/accounts").permitAll()
                 .anyRequest().authenticated().and()
-                .formLogin().permitAll().and()
+                .formLogin().permitAll()
+                .defaultSuccessUrl("/secret")
+                .and()
                 .logout().permitAll();
             //.invalidateHttpSession(true)                                             
             //.addLogoutHandler(logoutHandler)                                         

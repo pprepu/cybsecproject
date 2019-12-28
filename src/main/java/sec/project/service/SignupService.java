@@ -10,47 +10,44 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import sec.project.domain.Signup;
 import org.springframework.stereotype.Service;
+import sec.project.repository.SignupRepository;
 
 @Service
 public class SignupService  {
     
-    public List<Signup> listAll() throws Exception {
-        
-        List<Signup> signups = new ArrayList<>();
-        // Open connection
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:./database", "sa", "");
-
-        // Execute query and retrieve the query results
-        ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Signup");
-
-        // Do something with the results -- here, we print the books
-        while (resultSet.next()) {
-            //String id = resultSet.getString("id");
-            String name = resultSet.getString("name");
-            String address = resultSet.getString("address");
-
-            signups.add(new Signup(name, address));
-        }
-
-        // Close the connection
-        resultSet.close();
-        connection.close();
-        
-        return signups;
+    @Autowired
+    SignupRepository signupRepository;
+    
+    @PersistenceContext
+    private EntityManager em;
+    
+    public List<Signup> listSignups() {
+        List<Signup> results = em.createQuery("SELECT s FROM Signup s ").getResultList();
+        return results;
     }
     
-    public void addSignup(String name, String address) throws SQLException {
-        Connection c = DriverManager.getConnection("jdbc:h2:mem:./database", "sa", "");
-
-        // Perform input validation to detect attacks
-        String query = "INSERT INTO Agent (id, name) VALUES (?, ?) ";
-        PreparedStatement pstmt = c.prepareStatement( query );
-        pstmt.setString( 1, name); 
-        pstmt.setString( 2, address);
-        pstmt.execute();
-        
-        c.close();
+    @Transactional
+    public void addSignup(String name, String address) {
+        List<Signup> signups = listSignups();
+        long id = signups.size() + 1;
+        em.createNativeQuery("INSERT INTO Signup (id, name, address) VALUES ("+ id + ", '" + name + "', '" + address + "');").executeUpdate();
     }
+    /* one solution
+    @Transactional
+    public void addSignup(String name, String address) {
+        List<Signup> signups = listSignups();
+        long id = signups.size() + 1;
+        Query query = em.createNativeQuery("INSERT INTO Signup (id, name, address) VALUES (?, ?, ?)");
+        query.setParameter(1, id);
+        query.setParameter(2, name);
+        query.setParameter(3, address);
+        query.executeUpdate();
+    */
 }
