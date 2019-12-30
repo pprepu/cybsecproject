@@ -12,6 +12,7 @@ public class Account extends AbstractPersistable<Long>{
     @NotEmpty
     private String username;
     
+    /* 1.3, one solution would be changing the @Size-validation below by increasing it to min = 15 */
     @NotEmpty
     @Size(min = 2)
     private String password;
@@ -41,8 +42,6 @@ public class Account extends AbstractPersistable<Long>{
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
     
     @Override
     public String toString() {

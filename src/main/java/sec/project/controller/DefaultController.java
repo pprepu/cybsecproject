@@ -21,16 +21,13 @@ import sec.project.domain.EventFood;
 import sec.project.domain.Signup;
 import sec.project.repository.AccountRepository;
 import sec.project.repository.EventFoodRepository;
-import sec.project.repository.SignupRepository;
 import sec.project.service.AccountService;
 import sec.project.service.SignupService;
 
 @Controller
-public class SignupController {
+public class DefaultController {
     
-    //ArrayList<String> testi = new ArrayList<>();
-    
-    private int maxSize = 7;
+    private final int maxSize = 7;
     
     private boolean isNotFull = true;
     
@@ -42,9 +39,6 @@ public class SignupController {
     
     @Autowired
     private SignupService signupService;
-
-    @Autowired
-    private SignupRepository signupRepository;
     
     @Autowired
     private AccountRepository accountRepository;
@@ -70,28 +64,17 @@ public class SignupController {
         
         return "form";
     }
-
-    /*
-    @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String submitForm(@RequestParam String name, @RequestParam String address) {
-        List<Signup> currentlySignedUp = signupRepository.findAll();
-        if (currentlySignedUp.size() >= maxSize) {
-            return "redirect:/form";
-        }
-        signupRepository.save(new Signup(name, address));
-        return "redirect:/done";
-    }
-    */
     
     @RequestMapping(value = "/form", method = RequestMethod.POST)
     public String submitForm(@RequestParam String name, @RequestParam String address){
         
-        // alla oleva pois, niin taas yks vulnerability lisää
+        /* 1.1, the code below should be added, so that direct POST-requests couldn't 
+        be used to add additional signups to the page after max size has been reached .
         List<Signup> currentlySignedUp = signupService.listSignups();
         if (currentlySignedUp.size() >= maxSize) {
             return "redirect:/form";
         }
-    
+        */
         signupService.addSignup(name, address);
         session.setAttribute("signedUp", "done");
         return "redirect:/done";
@@ -100,6 +83,13 @@ public class SignupController {
     
     @RequestMapping(value = "/accounts", method = RequestMethod.POST)
     public String createNewAccount(@Valid @ModelAttribute Account account, BindingResult bindingResult) {
+        
+        /* 1.1, code below should be added to prevent using direct POST-requests to add new users 
+        when the person hasn't signed up.
+        if (session.getAttribute("signedUp") == null) {
+            return "error";
+        }
+        */
         if( bindingResult.hasErrors()) {
             return "done";
         }
@@ -108,22 +98,24 @@ public class SignupController {
             return "redirect:/done";
         }
         
-        // currently not doing this :( 
-        //String password = account.getPassword();
-        //account.setPassword(passwordEncoder.encode(password));
-        
+        /* 1.4, first part to fixing unencrypted passwords
+        These two lines below should be added to this method (use bcrypt for encypting passwords)
+        String password = account.getPassword();
+        account.setPassword(passwordEncoder.encode(password));
+        */
         accountRepository.save(account);
-        return "redirect:/secret";
+        return "redirect:/login";
     }
     
     @RequestMapping(value = "/done", method = RequestMethod.GET)
     public String loadDone(Model model, @ModelAttribute Account account) {
-        //model.addAttribute("list", signupRepository.findAll());
-        //One way to check authorization for the signups page - cookies and http sessions
+
+        
+        /* 1.1 One way to check authorization for the signups page - cookies and http sessions
         if (session.getAttribute("signedUp") == null) {
             return "error";
         }
-        
+        */
         model.addAttribute("list", signupService.listSignups());
         return "done";
     }
@@ -142,11 +134,9 @@ public class SignupController {
         return "redirect:/secret";
     }
     
-    @RequestMapping("/")
+    @RequestMapping("*")
     public String defaultMapping() {
         return "redirect:/form";
     }
     
-    
-
 }

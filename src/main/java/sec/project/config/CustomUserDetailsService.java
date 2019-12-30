@@ -2,8 +2,6 @@ package sec.project.config;
 
 import sec.project.domain.Account;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,16 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private AccountRepository accountRepository;
 
-    //private Map<String, String> accountDetails;
-
     @PostConstruct
     public void init() {
-        // this data would typically be retrieved from a database
-        /*
-        this.accountDetails = new TreeMap<>();
-        this.accountDetails.put("ted", "$2a$06$rtacOjuBuSlhnqMO2GKxW.Bs8J6KI0kYjw/gtF0bfErYgFyNTZRDm");
-        */
-        
+        /* 1.3, solution would be having an admin (or similar) account with a stronger password
+        Also, the password should be saved encrypted (steps for this explained in section 2.4) */
         Account a = new Account();
         a.setUsername("admin");
         a.setPassword("admin");
@@ -36,23 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         
     }
     
-    /*
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (!this.accountDetails.containsKey(username)) {
-            throw new UsernameNotFoundException("No such user: " + username);
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-                username,
-                this.accountDetails.get(username),
-                true,
-                true,
-                true,
-                true,
-                Arrays.asList(new SimpleGrantedAuthority("USER")));
-    }
-*/
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByUsername(username);

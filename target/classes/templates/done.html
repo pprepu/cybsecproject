@@ -11,14 +11,15 @@
         <h4>Attendees so far: </h4>
         <ul>
             <li th:each="element : ${list}">
-                <span th:text="${element}">Attendee</span>
+                <!--- 2.5, th:utext below should be changed to th:text -->
+                <span th:utext="${element}">Attendee</span>
             </li>
         </ul>
         
         <h4> Crucial information! </h4>
         
         <p> Everyone signed up for the event can make an account to access a secret page! </p>
-        <a href="/secret">Secret page!</a>
+        <a href="/login">Secret page!</a>
         
         <h4> Create a new account </h4>
         <form method="POST" th:object ="${account}" th:action="@{/accounts}">

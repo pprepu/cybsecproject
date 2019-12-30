@@ -17,14 +17,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
-    /*
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // no real security at the moment
-        http.authorizeRequests()
-                .anyRequest().permitAll();
+
+        http.csrf().disable()
+            .authorizeRequests()
+                .anyRequest().permitAll().and()
+                .formLogin().permitAll()
+                .defaultSuccessUrl("/secret")
+                .and()
+                .logout().permitAll();
     }
-    */
+    
+    /* 1.1 the method above should be replaced with the method below, so that accessing the /secret -path
+    would be open to authenticated users.
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -38,16 +45,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/secret")
                 .and()
                 .logout().permitAll();
-            //.invalidateHttpSession(true)                                             
-            //.addLogoutHandler(logoutHandler)                                         
-            //.deleteCookies(cookieNamesToClear);
-                //.logoutSuccessUrl("/form");
     }
-
+    */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        
         auth.userDetailsService(userDetailsService);
+        /* 1.4, second part to fixing unencrypted passwords
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        */
     }
 
     @Bean

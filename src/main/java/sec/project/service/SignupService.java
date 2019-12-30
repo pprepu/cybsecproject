@@ -39,7 +39,8 @@ public class SignupService  {
         long id = signups.size() + 1;
         em.createNativeQuery("INSERT INTO Signup (id, name, address) VALUES ("+ id + ", '" + name + "', '" + address + "');").executeUpdate();
     }
-    /* one solution
+    /* 1.2, first solution to prevent SQL-injection:
+    The currently used addSignup -method should be deleted and this method should be used instead
     @Transactional
     public void addSignup(String name, String address) {
         List<Signup> signups = listSignups();
@@ -49,5 +50,15 @@ public class SignupService  {
         query.setParameter(2, name);
         query.setParameter(3, address);
         query.executeUpdate();
+    */
+    /* 1.2, second solution to prevent SQL-injection:
+    The currently used addSignup -method should be deleted and this method should be used instead
+    public void addSignup(String name, String address) {
+    
+        Signup s = new Signup();
+        s.setName(name);
+        s.setAddress(address);
+        signupRepository.save(s);
+    }
     */
 }
